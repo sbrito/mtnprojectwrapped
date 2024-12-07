@@ -20,7 +20,7 @@ def upload():
             url = url + "/"
         url = url + "tick-export"
         data = pd.read_csv(url)
-    this_year = data[(data['Date'] >= '2023-01-01')]
+    this_year = data[(data['Date'] >= '2024-01-01')]
     routes = this_year.Route.nunique()
     locations = this_year.Location.nunique()
     max_crag = "Not enough data :("
