@@ -25,15 +25,18 @@ def upload():
     locations = this_year.Location.nunique()
     max_crag = "Not enough data :("
     if (locations > 0 ):
-        max_crag = this_year.groupby(['Location'])['Location'].count().idxmax()
-    
+        full_path = this_year.groupby(['Location'])['Location'].count().idxmax()
+        path_parts = full_path.split('>')
+        max_crag = path_parts[-1].strip()
+
     max_type = "Not enough data :("
     max_route = "Not enough data :("
     if (routes > 0):
         max_type = this_year.groupby(['Route Type'])['Route Type'].count().idxmax()
         max_route = this_year['Route'][this_year['Your Stars'].idxmax()]
     number_days = this_year['Date'].nunique()
-    return render_template('data.html', routes=routes, locations=locations, max_crag=max_crag, max_type=max_type, max_route=max_route,number_days=number_days)
+    climbing_style = max_type.lower() if max_type != "Not enough data :(" else "sport"
+    return render_template('data.html', routes=routes, locations=locations, max_crag=max_crag, max_type=max_type, max_route=max_route, number_days=number_days, climbing_style=climbing_style)
 
 if __name__ == '__main__':
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

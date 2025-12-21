@@ -5,115 +5,454 @@
     <meta charset="UTF-8">
     <title>2024 Climbing Wrapped</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Righteous&family=Orbitron:wght@700&family=Amatic+SC:wght@700&display=swap"
+        rel="stylesheet">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        /* CSS styles */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: #f7f7f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Nunito', sans-serif;
+            background: #000;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            text-align: center;
+        #shareableContent {
+            width: 100%;
             max-width: 400px;
-            width: 90%;
+            min-height: 100vh;
+            padding: 40px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+            position: relative;
+            margin: 0 auto;
         }
+
+        .settings-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        .settings-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-popover {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-option {
+            width: 120px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .theme-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        
+
+        /* Style themes */
+        .theme-sport {
+            background: linear-gradient(135deg, rgba(255, 78, 80, 0.9), rgba(249, 212, 35, 0.9));
+        }
+        .theme-sport .stat-item {
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-trad {
+            background-image: 
+                linear-gradient(135deg, rgba(19, 78, 94, 0.8), rgba(113, 178, 128, 0.8)),
+                repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0) 0deg 30deg, rgba(255, 255, 255, 0.2) 30deg 60deg);
+            background-size: 100%, 50px 50px;
+        }
+        .theme-trad .stat-item {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-ice {
+            background-image: 
+                linear-gradient(135deg, rgba(26, 42, 108, 0.8), rgba(134, 197, 218, 0.8)),
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 1px, transparent 15px),
+                radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.3) 1px, transparent 10px),
+                radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.4) 1px, transparent 12px);
+            background-size: 100%, 100px 100px, 80px 80px, 120px 120px;
+        }
+        .theme-ice .stat-item {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .theme-bouldering {
+            background-image: 
+                linear-gradient(135deg, #1c1c1c 0%, #363636 50%, #2a2a2a 100%),
+                radial-gradient(circle at 20% 20%, rgba(100, 100, 100, 0.3) 0%, transparent 25%),
+                radial-gradient(circle at 80% 30%, rgba(80, 80, 80, 0.2) 0%, transparent 30%),
+                radial-gradient(circle at 40% 70%, rgba(90, 90, 90, 0.25) 0%, transparent 20%),
+                radial-gradient(circle at 65% 85%, rgba(70, 70, 70, 0.2) 0%, transparent 15%),
+                radial-gradient(circle at 10% 50%, rgba(85, 85, 85, 0.3) 0%, transparent 35%),
+                radial-gradient(circle at 90% 60%, rgba(75, 75, 75, 0.25) 0%, transparent 25%);
+            background-size: 100% 100%, 150px 150px, 120px 120px, 80px 80px, 100px 100px, 200px 200px, 160px 160px;
+        }
+        .theme-bouldering .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 0px 10px;
+            backdrop-filter: blur(10px);
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
 
         h1 {
-            font-size: 1.6em;
-            margin-bottom: 20px;
-            color: #333;
+            font-family: 'Righteous', cursive;
+            font-size: 1.8em;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            transition: all 0.3s ease;
         }
 
-        .section {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 20px;
-            text-align: left;
+        .theme-sunset h1 {
+            font-family: 'Righteous', 'Helvetica Neue', 'Tahoma', sans-serif;
+            color: #FFE4B5;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .section-title {
+        .theme-forest h1 {
+            font-family: 'Orbitron', 'Helvetica Neue', 'Tahoma', sans-serif;
+            color: #98FB98;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-desert h1 {
+            font-family: 'Amatic SC', 'Helvetica Neue', 'Tahoma', cursive;
+            font-size: 2.4em;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 15px 0;
+            gap: 0;
+        }
+
+        @media (max-width: 768px) {
+            #shareableContent {
+                min-height: 100vh;
+                height: 100vh;
+                padding: 15px;
+            }
+
+            .stat-item {
+                padding: 10px;
+                margin: 5px 0;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .header {
+                padding: 5px 0;
+            }
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 10px 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-title {
+            font-size: 1em;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
             font-size: 1.2em;
-            margin-bottom: 5px;
             font-weight: bold;
-            color: #333;
+            text-align: center;
         }
 
-        .section-content {
-            font-size: 1em;
-            color: #666;
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9em;
         }
 
-        .sharePrompt h2 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #333;
+        #shareButton {
+            position: fixed;
+            bottom: 20px;
+            padding: 15px 30px;
+            background: white;
+            color: #1a2a6c;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .sharePrompt p {
-            font-size: 1em;
-            color: #555;
-            margin-bottom: 15px;
-        }
-
-        .mountain-icon {
-            font-size: 1em;
-            margin-right: 5px;
-            vertical-align: middle;
+        #shareableContent {
+            width: 100%;
+            max-width: 400px;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+            position: relative;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>🧗‍♂️ Climbing Wrapped</h1>
+    <div id="shareableContent">
+        <script>
+            // Randomly select a theme on load
+            window.onload = function () {
+                const themes = ['sunset', 'forest', 'desert'];
+                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                switchTheme(randomTheme);
+            };
+        </script>
+        <div class="settings-icon" onclick="toggleThemePopover()">🖌️</div>
+        <div class="theme-popover" id="themePopover">
+            <div class="theme-option" onclick="switchTheme('sport')">
+                <span>🧗‍♀️ Sport</span>
+            </div>
+            <div class="theme-option" onclick="switchTheme('trad')">
+                <span>⚙️ Trad</span>
+            </div>
+            <div class="theme-option" onclick="switchTheme('ice')">
+                <span>❄️ Ice</span>
+            </div>
+            <div class="theme-option" onclick="switchTheme('bouldering')">
+                <span>🪨 Bouldering</span>
+            </div>
+        </div>
+        <div class="header">
+            <h1>🧗‍♂️ My 2024<br>Climbing Wrapped</h1>
+        </div>
+        <script>
+            // Set initial theme based on climbing style
+            window.onload = function() {
+                switchTheme('{{climbing_style}}');
+            };
+        </script>
 
-        <div class="section">
-            <div class="section-title"><span class="mountain-icon">⛰️</span> Number of Routes Climbed</div>
-            <div class="section-content">{{routes}}</div>
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-title">⛰️ Routes Climbed</div>
+                <div class="stat-value">{{routes}}</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-title">🏞️ Locations Visited</div>
+                <div class="stat-value">{{locations}}</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-title">📅 Days Climbed</div>
+                <div class="stat-value">{{number_days}}</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-title">🏔️ Favorite Wall</div>
+                <div class="stat-value">{{max_crag}}</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-title">🧗‍♂️ Favorite Style</div>
+                <div class="stat-value">{{max_type}}</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-title">⭐ Highest Rated Route</div>
+                <div class="stat-value">{{max_route}}</div>
+            </div>
         </div>
 
-        <div class="section">
-            <div class="section-title"><span class="mountain-icon">🏞️</span> Number of Locations Climbed</div>
-            <div class="section-content">{{locations}}</div>
-        </div>
-
-        <div class="section">
-            <div class="section-title"><span class="mountain-icon">📅</span> Number of Days you Climbed</div>
-            <div class="section-content">{{number_days}}</div>
-        </div>
-
-        <div class="section">
-            <div class="section-title"><span class="mountain-icon">🏔️</span> Wall you've climbed at the most</div>
-            <div class="section-content">{{max_crag}}</div>
-        </div>
-
-        <div class="section">
-            <div class="section-title"><span class="mountain-icon">🧗‍♂️</span> Style you've climbed the most</div>
-            <div class="section-content">{{max_type}}</div>
-        </div>
-
-        <div class="section">
-            <div class="section-title"><span class="mountain-icon">🌟</span> Route you rated the highest</div>
-            <div class="section-content">{{max_route}}</div>
-        </div>
-
-        <!-- Add other sections following a similar structure -->
-
-        <div class="sharePrompt">
-            <h2>Share Your Climbing Year-in-Review!</h2>
-            <p>Take a screenshot and share it with your friends!</p>
+        <div class="footer">
+            climbingwrapped.com
         </div>
     </div>
+
+    <button id="shareButton" onclick="captureAndShare()">Share to Instagram 📸</button>
+
+    <script>
+        function toggleThemePopover() {
+            const popover = document.getElementById('themePopover');
+            popover.style.display = popover.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Close popover when clicking outside
+        document.addEventListener('click', function(event) {
+            const popover = document.getElementById('themePopover');
+            const settingsIcon = document.querySelector('.settings-icon');
+            if (!settingsIcon.contains(event.target) && !popover.contains(event.target)) {
+                popover.style.display = 'none';
+            }
+        });
+
+        function switchTheme(theme) {
+            const content = document.getElementById('shareableContent');
+            content.className = `theme-${theme}`;
+            document.getElementById('themePopover').style.display = 'none';
+        }
+
+        function showToast(message) {
+            // Only show toast on desktop devices
+            if (window.innerWidth >= 768) {
+                const toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.left = '50%';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                toast.style.color = 'white';
+                toast.style.padding = '10px 20px';
+                toast.style.borderRadius = '5px';
+                toast.style.zIndex = '1000';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        }
+
+        async function captureAndShare() {
+            const content = document.getElementById('shareableContent');
+            const styleSwitcher = document.querySelector('.style-switcher');
+            styleSwitcher.style.display = 'none';
+
+            try {
+                const canvas = await html2canvas(content, {
+                    scale: window.devicePixelRatio || 1,
+                    backgroundColor: null,
+                    width: content.scrollWidth,
+                    height: content.scrollHeight,
+                    useCORS: true,
+                    foreignObjectRendering: true
+                });
+
+                styleSwitcher.style.display = 'flex';
+
+                // Create blob and URL
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const file = new File([blob], "climbing-wrapped.png", {type: "image/png"});
+
+                try {
+                    // Try Web Share API first
+                    if (navigator.share && navigator.canShare({files: [file]})) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'My 2024 Climbing Wrapped',
+                        });
+                        showToast('Image shared! 🎉');
+                    } else {
+                        throw new Error('Web Share API not supported');
+                    }
+                } catch (err) {
+                    console.log('Falling back to server-side sharing:', err);
+                    
+                    // Server-side fallback
+                    try {
+                        const imageData = canvas.toDataURL('image/png');
+                        const response = await fetch('/save-image', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ imageData }),
+                        });
+                        
+                        if (!response.ok) throw new Error('Failed to save image');
+                        
+                        const { url } = await response.json();
+                        const fullUrl = window.location.origin + url;
+                        
+                        window.open(fullUrl, '_blank');
+                        showToast('Image opened in new tab');
+                    } catch (serverErr) {
+                        console.error('Server-side sharing failed:', serverErr);
+                        showToast('Error sharing image');
+                    }
+                }
+            } catch (err) {
+                console.error('Error capturing image:', err);
+                showToast('Error capturing image');
+            }
+        }
+    </script>
 </body>
 
 </html>

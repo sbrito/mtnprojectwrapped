@@ -5,70 +5,159 @@
     <meta charset="UTF-8">
     <title>Mountain Project Wrapped</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS styles */
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes climberMove {
+            0% { transform: translateY(100px) rotate(0deg); }
+            50% { transform: translateY(-50px) rotate(5deg); }
+            100% { transform: translateY(-200px) rotate(0deg); }
+        }
+
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeOut 1s ease-in-out forwards;
+            animation-delay: 2.5s;
+        }
+
+        .splash-screen h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .splash-screen .climber {
+            font-size: 4em;
+            animation: climberMove 2s ease-in-out forwards;
+        }
+
+        @keyframes rockSlide {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes chalkedUp {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            color: #333;
         }
 
         .container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 50px;
             text-align: center;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: #333;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            color: #1a2a6c;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         form {
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 20px;
         }
 
         label {
-            font-size: 1em;
-            margin-bottom: 10px;
-            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #1a2a6c;
+            text-align: left;
+            width: 100%;
         }
 
         input[type="url"] {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+        
+        input[type="url"]:focus {
+            border-color: #1a2a6c;
+            outline: none;
+            box-shadow: 0 0 10px rgba(26, 42, 108, 0.2);
         }
         
         input[type="file"] {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            cursor: pointer;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 15px 30px;
             border: none;
-            border-radius: 4px;
-            background-color: #333;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
             color: #fff;
-            font-size: 1em;
+            font-size: 1.2em;
             cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: chalkedUp 0.6s infinite;
+        }
+
+        .container {
+            animation: rockSlide 0.5s ease-out forwards;
+        }
+
+        form > * {
+            animation: rockSlide 0.5s ease-out forwards;
+            animation-delay: calc(var(--order) * 0.1s);
         }
         footer {
             background-color: #626262;
@@ -86,12 +175,29 @@
     </head>
     
     <body>
+        <div class="splash-screen">
+            <h1>Mountain Project Wrapped</h1>
+            <div class="climber">🧗‍♂️</div>
+        </div>
         <div class="container">
             <h1>Generate Your Climbing Year-in-Review</h1>
     <form action="/upload" method="post" enctype="multipart/form-data" id="profileForm">
         <label for="profileURL">Enter Your Mountain Project Profile URL (looks like:
             https://www.mountainproject.com/user/ID/NAME):</label>
         <input type="url" id="profileURL" name="profileURL">
+        <script>
+            // Load saved URL if exists
+            window.onload = function() {
+                const savedURL = localStorage.getItem('profileURL');
+                if (savedURL) {
+                    document.getElementById('profileURL').value = savedURL;
+                }
+            }
+            // Save URL when entered
+            document.getElementById('profileURL').addEventListener('change', function(e) {
+                localStorage.setItem('profileURL', e.target.value);
+            });
+        </script>
     
         <label for="csvFile" id="profileForm">Alternatively, If your ticks are private, export your ticks as a CSV & upload your ticks CSV file:</label>
         <input type="file" id="csvFile" name="csvFile" accept=".csv">
